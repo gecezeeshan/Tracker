@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TextInput, Button, Pressable, SafeAreaView, Fla
 import React, { useState } from 'react'
 
 import DateTimePicker from '@react-native-community/datetimepicker';
-const Game = () => {
+const NamazTracker = () => {
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
     const [items, setItems] = useState([
@@ -62,7 +62,7 @@ const Game = () => {
                 source={require('../assets/namazbg1.jpg')}
                 resizeMode="cover" // Optional: "cover", "contain", "stretch", etc.
                 //source={image} 
-                resizeMode="cover" >
+                 >
 
                 <Button onPress={showDatePicker} title="Select Date" />
                 <Text>Selected Date: {date.toDateString()}</Text>
@@ -158,5 +158,5 @@ const styles = StyleSheet.create({
 
 })
 
-export default Game
+export default NamazTracker
 
