@@ -1,73 +1,87 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text,  FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import MonthPicker from 'react-native-month-picker';
 import moment from 'moment';
 
 export default function HomeScreen({ navigation }) {
+
+
+  // const [selectedMonthData, setSelectedMonthData] = useState({
+  //   month: new Date().getMonth(),
+  //   year: new Date().getFullYear(),
+  // });
   const [dates, setDates] = useState([]);
-
-  const [selectedMonthData, setSelectedMonthData] = useState({
-    month: 9,
-    year: 2024,
-  });
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-
-
+  const [isShow, setIsShow] = useState(false);
+  const [dm, setDM] = useState(0);
+  const [selectedDate, changeDate] = useState(null);
 
   // Get all dates of the current month
-  const getDatesInMonth = () => {
-    const now = new Date();
+  const getDatesInMonth = (d: Date) => {
+    const now = new Date(d);
     const year = now.getFullYear();
     const month = now.getMonth();
     const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get last day of the month
-
-    const dateArray : any = [];
+    //setDM(d.getDate());
+    const dateArray: any = [];
     for (let day = 1; day <= daysInMonth; day++) {
-        let date = new Date(year, month, day);
+      let date = new Date(year, month, day);
       dateArray.push(date);
     }
     return dateArray;
   };
 
-  useEffect(() => {
-    setDates(getDatesInMonth());
-  }, []);
+  // useEffect(() => {
+  //   setDates(getDatesInMonth());
+  // }, []);
 
   // Render each date as a button in a grid
   const renderDateItem = ({ item }) => (
     <TouchableOpacity
       style={styles.dateCell}
-      onPress={() => navigation.navigate('Details', { date: item.toDateString() })}
+      onPress={() => navigation.navigate('Namaz', { date: item.toDateString() })}
     >
       <Text>{item.getDate()}</Text>
     </TouchableOpacity>
   );
-  const [selectedDate, changeDate] = useState(null);
+  const ShowCalender = () => {
+    setIsShow(!isShow);
+  }
+
+  const onMonthChange = (d) => {
+    console.log(d);
+    setIsShow(false);
+    setDates(getDatesInMonth(d));
+
+  }
   return (
     <>
-    
-    <Text>
+
+
+      {/* <Text>
         {selectedDate
           ? `Selected date: ${moment(selectedDate).format('MM/YYYY')}`
           : 'Please select a date'}
-      </Text>
-      <MonthPicker
+      </Text> */}
+      <Button title="Select Month" onPress={ShowCalender} />
+
+
+      {isShow && <MonthPicker
         selectedDate={selectedDate}
-        onMonthChange={changeDate}
+        onMonthChange={onMonthChange}
         onYearChange={newDate => console.log(newDate)}
         maxDate={moment()}
         minDate={moment('01-01-1995', 'DD-MM-YYYY')}
         currentMonthTextStyle={{ color: '#0aa9c2' }}
-      />
+      />}
 
-    <View style={styles.container}>
-      <FlatList
-        data={dates}
-        numColumns={7} // 7 columns for each day of the week
-        keyExtractor={(item) => item.toISOString()}
-        renderItem={renderDateItem}
-      />
-    </View>
+      <View style={styles.container}>
+        <FlatList
+          data={dates}
+          numColumns={7} // 7 columns for each day of the week
+          keyExtractor={(item) => item.toISOString()}
+          renderItem={renderDateItem}
+        />
+      </View>
     </>
   );
 }

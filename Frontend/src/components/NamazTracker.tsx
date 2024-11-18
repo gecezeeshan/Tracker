@@ -2,8 +2,9 @@ import { View, Text, StyleSheet, TextInput, Button, Pressable, SafeAreaView, Fla
 import React, { useState } from 'react'
 
 import DateTimePicker from '@react-native-community/datetimepicker';
-const NamazTracker = () => {
-    const [date, setDate] = useState(new Date());
+const NamazTracker = ({route}) => {
+    console.log(route.params.date);
+    const [date, setDate] = useState(new Date(route.params.date));
     const [show, setShow] = useState(false);
     const [items, setItems] = useState([
         { id: 1, item: 'FAjr', value: false },
@@ -32,7 +33,61 @@ const NamazTracker = () => {
                 item.id === id ? { ...item, value: newValue } : item
             )
         );
+        debugger;
+            console.log(items);
+        var params = [1,
+            route.params.date,
+            items[0].value,
+            items[1].value,
+            items[2].value,
+            items[3].value,
+            items[4].value
+        ];
+
+        postData(params);
+        /*
+         const params = [
+        tracker.userId,
+        tracker.date,
+        tracker.fajar,
+        tracker.zuhar,
+        tracker.asar,
+        tracker.maghrib,
+        tracker.isha,
+    ];
+        */
+
+
     };
+
+
+    const postData = async (data) => {
+        const url = 'http://localhost:3000/tracker';
+       // const url = 'https://example.com/api/endpoint';
+        // const data = {
+        //   name: 'John Doe',
+        //   email: 'john@example.com',
+        // };
+      var _body = JSON.stringify(data);
+        try {
+          const response = await fetch(url, {
+            method: 'POST', // HTTP method
+            headers: {
+              'Content-Type': 'application/json', // Specify JSON data format
+            },
+            body: _body, // Convert data to JSON
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const result = await response.json(); // Parse JSON response
+          console.log('Success:', result);
+        } catch (error) {
+          console.error('Error:');
+        }
+      };
 
     // Rendering each item as a TextInput
     const renderItem = ({ item }) => (
